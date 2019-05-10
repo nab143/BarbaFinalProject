@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+	<title>Artificial Reefs in Miami-Dade County Florida</title>
+
+
+	<link href="css/main.css" rel="stylesheet" />
+  <link href="css/bar-chart.css" rel="stylesheet" />
+	<link href="css/area-chart.css" rel="stylesheet" />
+	<link href="css/scatter-plot.css" rel="stylesheet" />
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+
+
+</head>
+
+
+
+<body>
+
+	<header>
+      <h1>Artificial Reefs in Miami-Dade County Florida</h1>
+      <p><i>Created By Nicole Barba</i></p>
+  </header>
+
+	<main> <!-- BEGIN MAIN -->
+
+		<section class="section1"><!-- BEGIN SECTION 1 -->
+
+			<h2>About the Reefs</h2>
+			<p>Covering less than 1% of the ocean's floor, reefs provide a home to about 25% of marine animals. Reefs help protect the land from harsh storms, flooding, and waves. Additionally, reefs create interest to tourists as dive sites. Although having deployed many reefs before, Florida's Miami-Dade County began its artificial reef program in 1981.</p>
+
+		</section><!-- END SECTION 1 -->
+
+
+
+
+
+		<section class="section2"><!-- BEGIN SECTION 2 -->
+
+			<h2>Number of Artificial Reefs At Each Site</h2>
+			<p>Miami-Dade's reef program is the largest of its kind in Florida reaching a total number of 233 reefs spread across 24 site areas.<br><br> The area chart below represents the number of reefs deployed in every year since 1970. The y-axis represenst the number of reefs while the x-axis represents the year the reefs were deployed.<br><br><i>Note: Unidentiied reef deployed in 1930 is not shown below.</i></p>
+
+				<svg id="charttwo"></svg>
+
+			</section><!-- END SECTION 2 -->
+
+
+
+
+
+			<section class="section3"><!-- BEGIN SECTION 3 -->
+
+				<h2>Number of Artificial Reefs At Each Site</h2>
+				<p>Each site area has a different number of reefs. Types of sites consist of offshore and inshore reefs.<br><br> The bar charts below represent the number of reefs in each area of Miami-Dade County. As you can see, the Key Biscayne area contains the most reefs totaling to 52 reefs.</p>
+
+					<form class="radio-buttons">
+
+            <label class="radio-inline">
+							<input type="radio" name="reeftype" value="all" onclick='change(this.value)' checked > All Reefs
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="reeftype" value="offshore" onclick='change(this.value)'> Offshore Reefs
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="reeftype" value="inshore" onclick='change(this.value)'> Inshore Reefs
+						</label>
+					</form>
+
+
+					<svg id="chartthree"></svg>
+
+				</section><!-- END SECTION 3 -->
+
+
+
+
+
+				<section class="section4"><!-- BEGIN SECTION 4 -->
+
+					<h2>Maximum Depth Of Reefs At Each Site</h2>
+					<p>The depth of each reef site varies from 7 to 365 feet. <br><br> The scatter plot below focuses on the maximum depth in each site area on the y-axis and reef area on the x-axis. The size of the circles represent the number of reefs in each site.</p>
+
+						<div id="chartfour"></div>
+
+					</section><!-- END SECTION 4 -->
+
+
+
+
+
+					<section class="section5"><!-- BEGIN SECTION 5 -->
+
+						<h4>Sources:</h4>
+						<p>Conde, Alex. "How Artificial Reefs Are Saving Miami's Ecosystems." <i>INSH, 14 Mar. 2018, insh.world/geo.artificial-reefs-saving-miamis-ecosystems/.</i><br> Services, Miami-Dade County Online. "Artificial Reef Program - Miami-Dade County." <i>Miami</i> www.miamidade.gov/environment/reefs-artificial.asp. <br> County, Miami-Dade. "Miami-Dade County - DERM Artificial Reef Program." <i>Artificial Reef</i>, ftp.fdot.gov/public/folder/HkSWIK59G0qRNsAJUh3xXg/permitsandorutilityworkschedu/district6/FPID%2042440715201/Permits/artificial-reef.pdf.<br> "Artificial Reef." <i>Miami-Dade County's Open Data Hub,</i> MDPublisher, gis-mdc.opendata.arcgis.com/datasets/2678d9eb68cc4aedb1ef7ceecf6c2601_0?geometry=-81.88%2C25.206%2C-78.519%2C26.072&orderBy=DATE_DEPLOYED&page=24.</p> 
+
+					</section><!-- END SECTION 5 -->
+
+
+
+
+
+	</main> <!-- END MAIN -->
+
+	<script src="js/d3.min.js"></script>
+
+		<script>//BEGIN AREA CHART
+
+
+			d3.csv("data/reef_deployment.csv").then(function(data) {
+
+			var margin2 = {
+										top: 40,
+										right: 25,
+										bottom: 150,
+										left: 49
+									}
+
+					width2 = 860
+					height2 = 575;
+
+			var timeParser = d3.timeParse("%Y-%m-%d");
+
+				data.forEach(function(d) {
+						d.Year = timeParser(d.Year);
+						d.Reef = +d.Reef;
+						});
+
+			var charttwo = d3.select("#charttwo")
+											 .append("svg");
+
+			charttwo.attr("width", width2 - margin2.right)
+				 			.attr("height", height2);
+
+			var xScale = d3.scaleTime()
+										 .domain(d3.extent(data, function(d) {
+											 return d.Year } ))
+										 .range([0, (width2 - margin2.left - margin2.right)]);
+
+			var yScale = d3.scaleLinear()
+										 .domain(d3.extent(data, function(d) {
+											 return d.Reef }))
+										 .range([(height2 - margin2.top - margin2.bottom), 0])
+
+			var line = d3.area()
+									 .x(function(d) {
+										 return xScale(d.Year) })
+									 .curve(d3.curveStep) //shape of the area
+									 .y0(function(d) {
+										 return yScale.range()[0]; })
+									 .y1(function(d) {
+										 return yScale(d.Reef) });
+
+			charttwo.append("g")
+				 			.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+				 			.append("path")
+				 			.datum(data)
+				 			.attr("class", "linedata")
+				 			.attr("d", line);
+
+			var xAxis = d3.axisBottom()
+										.scale(xScale)
+										.ticks(20);
+
+			var yAxis = d3.axisLeft()
+										.scale(yScale)
+										.ticks(12);
+
+			charttwo.append("g")
+							.attr("transform", "translate(" + margin2.left + "," + (height2 - margin2.bottom) + ")")
+							.attr("class", "xaxis")
+							.call(xAxis);
+
+			charttwo.append("g")
+				 			.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+				 			.attr("class", "yaxis")
+				 			.call(yAxis);
+
+			var average = d3.mean(data, function(d) {
+				return d.Reef });
+
+			charttwo.append("line")
+				 			.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+				 			.attr("class", "lineaverage")
+				 			.attr("x1", 0)
+				 			.attr("x2", (width2 - margin2.left - margin2.right))
+				 			.attr("y1", yScale(average))
+				 			.attr("y2", yScale(average));
+
+			charttwo.append("text")
+				 			.attr("x", 20)
+				 			.attr("y", yScale(average))
+				 			.attr("transform", "translate(" + (margin2.left + 5) + "," + (margin2.top - 5) + ")")
+				 			.text("Average Number of Reefs Deployed: About 5")
+
+			var maxRate = data.filter(function(d) {
+
+			var max = d3.max(data, function(d) {
+				return d.Reef });
+
+				if(d.Reef == max) {
+					return d.Reef;
+				}
+
+			});
+
+			var maxRateX = xScale(maxRate[0].Year),
+					maxRateY = yScale(maxRate[0].Reef);
+
+			charttwo.append("line")
+				 			.attr("class", "linetext")
+				 			.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+				 			.attr("x1", (maxRateX + 1))
+				 			.attr("x2", (maxRateX + 11))
+				 			.attr("y1", (maxRateY - 1))
+				 			.attr("y2", (maxRateY - 11));
+
+			charttwo.append("text")
+				 			.text("Most Reefs Deployed: 20 in 1998")
+				 			.attr("x", (maxRateX + 12))
+				 			.attr("y", (maxRateY - 12))
+				 			.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+						});
+
+	//END AREA CHART</script>
+
+
+
+
+
+	<script> //START BAR CHART
+
+		//creating the data sets for the reef's area name, type (offshore/inshore), and amount.
+		var dataAll = [
+
+			// reef number 1
+			{
+				"reefType": "Offshore",
+				"reefArea": "Anchorage",
+				"reefAmount": "20"
+			},
+			// reef number 2
+			{
+				"reefType": "Inshore",
+				"reefArea": "Brickell",
+				"reefAmount": "3"
+			},
+			// reef number 3
+			{
+				"reefType": "Offshore",
+				"reefArea": "Dade Sportfish Council",
+				"reefAmount": "4"
+			},
+			// reef number 4
+			{
+				"reefType": "Inshore",
+				"reefArea": "Dumfoundling",
+				"reefAmount": "5"
+			},
+			// reef number 5
+			{
+				"reefType": "Offshore",
+				"reefArea": "Fish & Game Unlimited",
+				"reefAmount": "6"
+			},
+			// reef number 6
+			{
+				"reefType": "Offshore",
+				"reefArea": "Golden Beach",
+				"reefAmount": "28"
+			},
+			// reef number 7
+			{
+				"reefType": "Inshore",
+				"reefArea": "Greynolds Park",
+				"reefAmount": "1"
+			},
+			//reef number 8
+			{
+				"reefType": "Offshore",
+				"reefArea": "Haulover",
+				"reefAmount": "9"
+			},
+			// reef number 9
+			{
+				"reefType": "Inshore",
+				"reefArea": "Julia Tuttle",
+				"reefAmount": "20"
+			},
+			// reef number 10
+			{
+				"reefType": "Offshore",
+				"reefArea": "Key Biscayne SMZ",
+				"reefAmount": "52"
+			},
+			// reef number 11
+			{
+				"reefType": "Inshore",
+				"reefArea": "Mercy",
+				"reefAmount": "7"
+			},
+			// reef number 12
+			{
+				"reefType": "Offshore",
+				"reefArea": "North Bayside Park",
+				"reefAmount": "1"
+			},
+			// reef number 13
+			{
+				"reefType": "Inshore",
+				"reefArea": "Oleta River State Park",
+				"reefAmount": "7"
+			},
+			// reef number 14
+			{
+				"reefType": "Inshore",
+				"reefArea": "Pelican Harbor",
+				"reefAmount": "1"
+			},
+			// reef number 15
+			{
+				"reefType": "Offshore",
+				"reefArea": "Pflueger",
+				"reefAmount": "14"
+			},
+			// reef number 16
+			{
+				"reefType": "Offshore",
+				"reefArea": "Port Of Miami",
+				"reefAmount": "7"
+			},
+			// reef number 17
+			{
+				"reefType": "Inshore",
+				"reefArea": "Rickenbacker Causeway",
+				"reefAmount": "1"
+			},
+			// reef number 18
+			{
+				"reefType": "Offshore",
+				"reefArea": "R.J. Diving Ventures",
+				"reefAmount": "6"
+			},
+			// reef number 19
+			{
+				"reefType": "Inshore",
+				"reefArea": "San Souci",
+				"reefAmount": "1"
+			},
+			// reef number 20
+			{
+				"reefType": "Offshore",
+				"reefArea": "South Miami Beach",
+				"reefAmount": "14"
+			},
+			// reef number 21
+			{
+				"reefType": "Inshore",
+				"reefArea": "Star Island",
+				"reefAmount": "1"
+			},
+			// reef number 22
+			{
+				"reefType": "Offshore",
+				"reefArea": "Sunny Isles",
+				"reefAmount": "20"
+			},
+			// reef number 23
+			{
+				"reefType": "Offshore",
+				"reefArea": "Tenneco",
+				"reefAmount": "4"
+			},
+			// reef number 24
+			{
+				"reefType": "Offshore",
+				"reefArea": "Unidentified",
+				"reefAmount": "1"
+			}
+
+		];
+
+		//creating the data to be called for the reef's type (offshore/inshore)
+		var dataOffshore = [];
+		var dataInshore = [];
+
+			for(var i = 0; i < dataAll.length; i++){
+
+				if(dataAll[i]["reefType"] === "Offshore"){
+
+					dataOffshore.push(dataAll[i]);
+
+					}else{
+
+						dataInshore.push(dataAll[i]);
+					}
+				}
+
+			//functions switching between the data with the radio buttons
+			function change(value){
+
+				if(value === "offshore"){
+					update(dataOffshore);
+
+					}else if(value === "inshore"){
+
+						update(dataInshore);
+					}else{
+
+						update(dataAll);
+					}
+				}
+
+			function update(data){
+
+		//creating the domains for the x axis
+		xChartthree.domain(data.map(function(d) {
+							return d.reefArea; }) );
+
+		//creating the domains for the y axis
+		yChartthree.domain( [0, d3.max(data, function(d){
+							return +d.reefAmount; })] );
+
+		//creating the width of the bars
+		var barW = width / data.length;
+
+		//selecting the bars and switching them out for the next data set
+		var bars = chartthree.selectAll(".bars")
+										 	 	 .remove()
+										   	 .exit()
+										 	 	 .data(data)
+
+		//applying the data to the rectangles
+		bars.enter()
+				.append("rect")
+				.attr("class", "bars")
+				.attr("x", function(d, i){ return i * barW + 1 })
+				.attr("y", function(d){ return yChartthree( d.reefAmount); })
+				.attr("height", function(d){ return height - yChartthree(d.reefAmount); })
+				.attr("width", barW - 1)
+				.attr("fill", function(d){
+					if(d.reefType === "Offshore"){
+						return "#1da2d8";
+					}else{
+						return "#7fcdff";
+					}
+				});
+
+		//y axis on the left side
+		chartthree.select(".y")
+  						.call(yAxis)
+							.attr("class", "Axis")
+
+		//x axis on the bottom
+		chartthree.select(".xAxis")
+							.attr("transform", "translate(0," + height + ")")
+							.call(xAxis)
+							.attr("class", "Axis")
+							.selectAll("text")
+								.style("text-anchor", "end")
+								.attr("dx", "-.8em")
+								.attr("dy", ".15em")
+								.attr("transform", function(d){
+									return "rotate(-65)";
+								});
+
+		}//update closes and ends here
+
+		//creating the margins, width, and height of the svg
+		var margin = {
+									top: 20,
+									right: 20,
+									bottom: 150,
+									left: 50};
+
+				width = 860;
+				height = 275;
+
+		//creating the svg chartthree
+		var chartthree = d3.select("#chartthree")
+										 	 .attr("width", width + margin.left + margin.right)
+										 	 .attr("height", height + margin.top + margin.bottom)
+										 	 .append("g")
+										 	 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		//creating the scales and x and y axes
+		var xChartthree = d3.scaleBand()
+												.range([0, width]);
+
+		var yChartthree = d3.scaleLinear()
+												.range([height, 0]);
+
+		var xAxis = d3.axisBottom(xChartthree);
+		var yAxis = d3.axisLeft(yChartthree);
+
+		chartthree.append("g")
+  						.attr("class", "y axis")
+  						.call(yAxis)
+
+		chartthree.append("g")
+							.attr("class", "xAxis")
+							.attr("transform", "translate(0," + height + ")")
+							.call(xAxis)
+							.selectAll("text")
+								.style("text-anchor", "end")
+								.attr("dx", "-.8em")
+								.attr("dy", ".15em")
+								.attr("transform", function(d){
+									return "rotate(-45)";
+								});
+
+		//adding main labels on the sides of the graph
+		chartthree.append("text")
+							.attr("transform", "translate(-35," +  (height+margin.bottom)/2 + ") rotate(-90)")
+							.text("Number Of Reefs")
+							.attr("class", "text");
+
+		chartthree.append("text")
+							.attr("transform", "translate(" + (width/2) + "," + (height + margin.bottom - 5) + ")")
+							.text("Reef Area")
+							.attr("class", "text");
+
+		//updating the data to start with dataAll
+		update(dataAll);
+
+//END BAR CHART</script>
+
+
+
+
+
+	<script> //START SCATTER PLOT
+
+    //creating the data for area site number, maximum depth, number of reefs, site name
+			var datadepth = [
+				[1, 50, 20, 'Anchorage'],
+				[2, 14, 3, 'Brickell'],
+				[3, 225, 4, 'Dade Sportfish Council'],
+				[4, 45, 5, 'Dumfoundling Bay'],
+				[5, 240, 6, 'Fish & Game Unlimited'],
+				[6, 45, 28, 'Golden Beach'],
+				[7, 10, 1, 'Greynolds Park'],
+				[8, 365, 9, 'Haulover'],
+				[9, 28, 20, 'Julia Tuttle'],
+				[10, 265, 52, 'Key Biscayne SMZ'],
+				[11, 13, 7, 'Mercy'],
+        [12, 7, 1, 'North Bayside Park'],
+        [13, 16, 7, 'Oleta River State Park'],
+        [14, 7, 1, 'Pelican Harbor'],
+        [15, 250, 14, 'Pflueger'],
+        [16, 45, 7, 'Port Of Miami'],
+        [17, 10, 1, 'Rickenbacker Causeway'],
+        [18, 160, 6, 'R.J. Diving Ventures'],
+        [19, 25, 1, 'San Souci'],
+        [20, 20, 14, 'South Miami Beach'],
+        [21, 12, 1, 'Star Island'],
+        [22, 69, 20, 'Sunny Isles'],
+        [23, 240, 4, 'Tenneco'],
+        [24, 10, 1, 'Unidentified']
+			];
+
+			// creating the width, height, and padding for the scatterplot svg
+      var width4 = 890,
+				  height4 = 500,
+				  padding4 = 40;
+
+      // creating the scatter plot svg chartfour
+			var chartfour = d3.select("#chartfour")
+												.append("svg");
+
+			//Creating the tooltip div for chartfour
+			var tooltipscatter = d3.select("#chartfour")
+														 .append("div")
+														 .attr("class", "toolTipscatter");
+
+			// creating the x and y scales
+			var xScale = d3.scaleLinear()
+			  						 .domain([0, d3.max(datadepth, function(d) { return d[0] })])
+										 .range([padding4, width4 - padding4]);
+
+			var yScale = d3.scaleLinear()
+			  						 .domain([0, d3.max(datadepth, function(d) { return d[1] })])
+										 .range([height4 - padding4, padding4]);
+
+      // width and height for padding
+			chartfour.attr("width", width4 + padding4)
+			   			 .attr("height", height4 + padding4);
+
+			// creating the radius square root variable for size of the circle
+			var rScale = d3.scaleSqrt();
+
+			// creating the circles to show the data x, y positions and reef amount size
+			// creating the tooltip on mouse over circle hover
+			chartfour.selectAll("circle")
+			   			 .data(datadepth)
+				 		 	 .enter()
+				 		 	 .append("circle")
+				 		 	 .attr("cx", function(d) { return xScale(d[0]) })
+				 		 	 .attr("cy", function(d) { return yScale(d[1]) })
+				 		 	 .attr("r", function(d) { return rScale(d[2]) * 2 })
+         		 		.on("mousemove", function(d){
+            			tooltipscatter
+              			.style("left", d3.event.pageX - 30 + "px")
+              			.style("top", d3.event.pageY - 50 + "px")
+              			.style("display", "inline-block")
+              			.html("Reef Area: " + d[3] + "<br>" + "Reef Amount: " + d[2]);
+        					})
+    					 	.on("mouseout", function(d){ tooltipscatter.style("display", "none");
+							});
+
+			// Creating the x and y axis positions and tick marks
+			var xAxis = d3.axisBottom()
+			  						.scale(xScale)
+										.ticks(24);
+
+			var yAxis = d3.axisLeft()
+			  						.scale(yScale)
+										.ticks(6);
+
+    	// creating groups for the x and y axis
+			chartfour.append("g")
+			  				.attr("class", "xaxis")
+								.attr("transform", "translate(0, " + (height4 - padding4) + ")")
+								.call(xAxis);
+
+			chartfour.append("g")
+			  			 .attr("class", "yaxis")
+				       .attr("transform", "translate(" + padding4 + "," + 0 + ")")
+							 .call(yAxis);
+
+			chartfour.append("text")
+				 			 .attr("transform", "translate(-35," +  (height4+padding4)/2 + ") rotate(-90)")
+				 			 .text("Number Of Reefs")
+				 			 .attr("class", "text4");
+
+			chartfour.append("text")
+				 			 .attr("transform", "translate(" + (width4/2) + "," + (height4 + padding4 - 5) + ")")
+				 			 .text("Reef Area Number")
+				 			 .attr("class", "text4");
+
+	//END SCATTER PLOT</script>
+
+
+
+	</body>
+</html>

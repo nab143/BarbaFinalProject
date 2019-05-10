@@ -1,0 +1,24 @@
+text {
+  font-family: sans-serif;
+	font-size: 10px;
+	letter-spacing: 1px;
+  fill: #2874A6;
+}
+
+circle {
+	fill: #1da2d8;
+  stroke: #064273;
+  stroke-width: 1px;
+}
+
+.toolTipscatter {
+  position: absolute;
+  display: none;
+  min-width: 20px;
+  height: 30;
+  background: none repeat scroll 0 0 #def3f6;
+  border: 1px solid #064273;
+  padding: 5px;
+  text-align: left;
+  font-size: 10px;
+}

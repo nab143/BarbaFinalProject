@@ -1,0 +1,38 @@
+header,
+main {
+  max-width: 960px;
+	margin: 0 auto;
+}
+
+body {
+  background-color: #def3f6;
+  color: #064273;
+  font-family: serif;
+}
+
+h1 {
+  font-size: 45px;
+  text-align: center;
+}
+
+section {
+  margin: 65px;
+}
+
+svg {
+	background-color: #76b6c4;
+}
+
+#charttwo {
+  width: 860px;
+  height: 500px;
+}
+
+/* #chartthree {
+
+} */
+
+#chartfour {
+  width: 860px;
+  height: 500px;
+}

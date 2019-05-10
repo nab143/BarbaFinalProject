@@ -1,0 +1,26 @@
+section2 {
+  	text-align: left;
+}
+
+text {
+  font-family: sans-serif;
+  font-size: 10px;
+  fill: #064273;
+}
+
+.linedata {
+  fill: #1da2d8;
+  stroke: #064273;
+  stroke-width: 1px;
+}
+
+.lineaverage {
+  fill: none;
+  stroke: #064273;
+  stroke-dasharray: 5,5;
+}
+
+.linetext {
+  stroke: #064273;
+  stroke-width: 1px;
+}
